@@ -27,7 +27,7 @@ method isPrefix(pre: string, str: string) returns (res: bool)
 
 predicate isSubstringPredicate (sub: string, str:string)
 {
-  |str| >= |sub| && exists i :: 0 <= i <= |str| && isPrefixPredicate(sub, str[i..])
+  |str| >= |sub| && (exists i :: 0 <= i <= |str| && isPrefixPredicate(sub, str[i..]))
 }
 
 method isSubstring(sub: string, str: string) returns (res:bool)
@@ -82,13 +82,24 @@ method haveCommonKSubstring(k: nat, str1: string, str2: string) returns (found: 
     return false;
 }
 
+
+predicate maxCommonSubstringPredicate(str1: string, str2: string, len:nat)
+{
+   forall k :: len < k <= |str1| ==> !haveCommonKSubstringPredicate(k, str1, str2)
+}
+
 method maxCommonSubstringLength(str1: string, str2: string) returns (len:nat)
+ensures len <= |str1| && len <= |str2|
+ensures len >= 0
+ensures maxCommonSubstringPredicate(str1, str2, len)
 {
     
   var i := |str1|;
 
   while i > 0
   decreases i
+  invariant i >= 0
+  invariant forall j :: i < j <= |str1| ==> !haveCommonKSubstringPredicate(j, str1, str2)
   {
     var ans := haveCommonKSubstring(i, str1, str2);
     if ans {
@@ -96,20 +107,7 @@ method maxCommonSubstringLength(str1: string, str2: string) returns (len:nat)
     }
     i := i -1;
   }
-
+  assert i == 0;
   return 0;
 
-}
-
-method Main()
-{
-  // some testing
-  var pre := "pre";
-  var str := "preadasda";
-  var ans := isPrefix(pre, str);
-  print ans;
-  ans := isPrefix("abab", "abacadae");
-  print ans;
-  ans := isPrefix("abab", "ab");
-  print ans;
 }

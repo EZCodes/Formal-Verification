@@ -1,1 +1,7 @@
 *.bvd
+*.exe
+*.pdb
+
+Dafny/*.bvd
+Dafny/*.exe
+Dafny/*.pdb
