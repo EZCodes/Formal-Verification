@@ -34,16 +34,16 @@ lemma SubstringNegationLemma(sub:string, str:string)
 
 predicate haveCommonKSubstringPred(k:nat, str1:string, str2:string)
 {
-  |k| <= |str1| && |k| <= |str2| && exists i :: 0 <= i <= |str1|-k && isSubstringPred((str1[i..])[..k], str2)
+	k <= |str1| && k <= |str2| && exists i :: 0 <= i <= |str1|-k && isSubstringPred(str1[i..][..k], str2)
 }
 
 predicate haveNotCommonKSubstringPred(k:nat, str1:string, str2:string)
 {
-	//TODO: your FOL formula should start with a forall
+	k > |str1| || k > |str2| || forall i :: 0 <= i <= |str1|-k ==> isNotSubstringPred(str1[i..][..k], str2)
 }
 
 // Sanity check: Dafny should be able to automatically prove the following lemma
-//lemma commonKSubstringLemma(k:nat, str1:string, str2:string)
-//	ensures  haveCommonKSubstringPred(k,str1,str2) <==> !haveNotCommonKSubstringPred(k,str1,str2)
-//	ensures !haveCommonKSubstringPred(k,str1,str2) <==> haveNotCommonKSubstringPred(k,str1,str2)
-//{}
+lemma commonKSubstringLemma(k:nat, str1:string, str2:string)
+	ensures  haveCommonKSubstringPred(k,str1,str2) <==> !haveNotCommonKSubstringPred(k,str1,str2)
+	ensures !haveCommonKSubstringPred(k,str1,str2) <==> haveNotCommonKSubstringPred(k,str1,str2)
+{}
