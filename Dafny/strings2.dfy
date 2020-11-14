@@ -1,3 +1,5 @@
+// We spent total 2h each on this assignment
+
 predicate isPrefixPred(pre:string, str:string)
 {
 	(|pre| <= |str|) && pre == str[..|pre|]
@@ -34,12 +36,12 @@ lemma SubstringNegationLemma(sub:string, str:string)
 
 predicate haveCommonKSubstringPred(k:nat, str1:string, str2:string)
 {
-	k <= |str1| && k <= |str2| && exists i :: 0 <= i <= |str1|-k && isSubstringPred(str1[i..][..k], str2)
+	exists i :: 0 <= i <= |str1|-k && isSubstringPred(str1[i..][..k], str2)
 }
 
 predicate haveNotCommonKSubstringPred(k:nat, str1:string, str2:string)
 {
-	k > |str1| || k > |str2| || forall i :: 0 <= i <= |str1|-k ==> isNotSubstringPred(str1[i..][..k], str2)
+	forall i :: 0 <= i <= |str1|-k ==> isNotSubstringPred(str1[i..][..k], str2)
 }
 
 // Sanity check: Dafny should be able to automatically prove the following lemma
