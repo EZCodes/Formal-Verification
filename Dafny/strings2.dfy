@@ -17,7 +17,7 @@ lemma PrefixNegationLemma(pre:string, str:string)
 
 predicate isSubstringPred(sub:string, str:string)
 {
-  //TODO
+  (|sub| <= |str|) && (exists i :: 0 <= i < |sub| && isPrefixPred(sub, str[i..]))
 }
 
 predicate isNotSubstringPred(sub:string, str:string)
