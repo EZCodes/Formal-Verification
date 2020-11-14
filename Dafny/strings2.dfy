@@ -34,7 +34,7 @@ lemma SubstringNegationLemma(sub:string, str:string)
 
 predicate haveCommonKSubstringPred(k:nat, str1:string, str2:string)
 {
-  //TODO
+  |k| <= |str1| && |k| <= |str2| && exists i :: 0 <= i <= |str1|-k && isSubstringPred((str1[i..])[..k], str2)
 }
 
 predicate haveNotCommonKSubstringPred(k:nat, str1:string, str2:string)
