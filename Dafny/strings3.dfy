@@ -19,7 +19,22 @@ method isPrefix(pre: string, str: string) returns (res:bool)
 	ensures !res <==> isNotPrefixPred(pre,str)
 	ensures  res <==> isPrefixPred(pre,str)
 {
-//TODO: insert your code here
+	if |pre| > |str|
+    	{return false;}
+
+  	var i := 0;
+  	while i < |pre|
+    	decreases |pre| - i
+    	invariant 0 <= i <= |pre|
+    	invariant forall j :: 0 <= j < i ==> pre[j] == str[j]
+  	{
+    	if pre[i] != str[i]
+    	{
+       		return false;
+    	} 
+    	i := i + 1;
+  	}
+ 	return true;
 }
 predicate isSubstringPred(sub:string, str:string)
 {
@@ -40,9 +55,25 @@ method isSubstring(sub: string, str: string) returns (res:bool)
 	ensures  res <==> isSubstringPred(sub, str)
 	//ensures !res <==> isNotSubstringPred(sub, str) // This postcondition follows from the above lemma.
 {
-//TODO: insert your code here
-}
+	if |sub| > |str| {
+        return false;
+    }
 
+    var i := |str| - |sub|;
+    while i >= 0 
+    decreases i
+    invariant i >= -1
+    invariant forall j :: i <  j <= |str|-|sub| ==> !(isPrefixPred(sub, str[j..]))
+    {
+        var isPref := isPrefix(sub, str[i..]);
+        if isPref
+        {
+            return true;
+        }
+        i := i-1;
+    }
+    return false;
+}
 
 predicate haveCommonKSubstringPred(k:nat, str1:string, str2:string)
 {
@@ -63,7 +94,23 @@ method haveCommonKSubstring(k: nat, str1: string, str2: string) returns (found: 
 	ensures found  <==>  haveCommonKSubstringPred(k,str1,str2)
 	//ensures !found <==> haveNotCommonKSubstringPred(k,str1,str2) // This postcondition follows from the above lemma.
 {
-//TODO: insert your code here
+	 if( |str1| < k || |str2| < k){
+        return false;
+    }
+    var i := |str1| - k;
+    while i >= 0
+      decreases i
+      invariant i >= -1 
+      invariant forall j :: i < j <= |str1| - k ==> !isSubstringPred(str1[j..][..k], str2)
+    {
+        var isSub := isSubstring(str1[i..][..k], str2);
+        if isSub 
+        {
+            return true;
+        }
+        i := i-1;
+    }
+    return false;
 }
 
 method maxCommonSubstringLength(str1: string, str2: string) returns (len:nat)
@@ -71,7 +118,22 @@ method maxCommonSubstringLength(str1: string, str2: string) returns (len:nat)
 	ensures (forall k :: len < k <= |str1| ==> !haveCommonKSubstringPred(k,str1,str2))
 	ensures haveCommonKSubstringPred(len,str1,str2)
 {
-//TODO: insert your code here
+	var i := |str1|;
+
+  	while i > 0
+  	decreases i
+  	invariant i >= 0
+  	invariant forall j :: i < j <= |str1| ==> !haveCommonKSubstringPred(j, str1, str2)
+  	{
+    	var ans := haveCommonKSubstring(i, str1, str2);
+    	if ans {
+       		return i;
+    	}
+    	i := i -1;
+  	}
+  	assert i == 0;
+	assert isPrefixPred(str1[0..0],str2[0..]);
+  	return 0;
 }
 
 
