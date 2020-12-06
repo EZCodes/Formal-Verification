@@ -101,9 +101,10 @@ method haveCommonKSubstring(k: nat, str1: string, str2: string) returns (found: 
     while i >= 0
       decreases i
       invariant i >= -1 
-      invariant forall j :: i < j <= |str1| - k ==> !isSubstringPred(str1[j..][..k], str2)
+      invariant forall j,t :: i < j <= |str1| - k && t==j+k ==> !isSubstringPred(str1[j..t], str2)
     {
-        var isSub := isSubstring(str1[i..][..k], str2);
+				var t := i+k;
+        var isSub := isSubstring(str1[i..t], str2);
         if isSub 
         {
             return true;
