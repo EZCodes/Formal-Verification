@@ -1,3 +1,5 @@
+// We spent 2h each on this assignment
+
 predicate isPrefixPred(pre:string, str:string)
 {
 	(|pre| <= |str|) && 
